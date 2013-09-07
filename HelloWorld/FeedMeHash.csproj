@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="iTweet.cs" />
+    <Compile Include="OAuth.cs" />
+    <Compile Include="Pair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -76,6 +78,7 @@
     </Compile>
     <Compile Include="FakeTweet.cs" />
     <Compile Include="TweetSorter.cs" />
+    <Compile Include="TwitterOAuth.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Web.Debug.config">

@@ -86,33 +86,6 @@ namespace FeedMeHash
             control.Controls.Add(innerpanel);
             return control;
         }
-
-        /* Broken please ignore
-public static string url = @"https://api.twitter.com/1.1/search/tweets.json";
-public static string urlParameters = @"?q=kittens&src=typd";
-protected string CreateRequest()
-{
-    return @"https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames&since_id=24012619984051000&max_id=250126199840518145&result_type=mixed&count=4";
-}
-protected HttpResponse MakeRequest(string request)
-{
-    HttpClient client = new HttpClient();
-    client.BaseAddress = new Uri(url);
-
-    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-    HttpResponseMessage response = client.GetAsync(urlParameters).Result;
-
-    //var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
-    //foreach (var d in dataObjects)
-    //{
-    //    Console.WriteLine("{0}", d.Name);
-    //}
-    int stall = 0;
-
-    return null;
-}
-*/
     }
 
 }
