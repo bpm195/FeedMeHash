@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Web.UI.HtmlControls;
 using System.Drawing;
 using System.Collections;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 
@@ -18,6 +19,9 @@ namespace FeedMeHash
 
     public partial class WebForm1 : System.Web.UI.Page
     {
+        protected readonly char[] _searchSeparators = {' ',','};
+        protected readonly string acceptableHashTagCharactersRegEx = @"[A-Za-z0-9_]";
+
         private int _index = 0;
         protected int Index
         {
@@ -27,7 +31,6 @@ namespace FeedMeHash
 
         protected void Page_Load(object sender, EventArgs e) { }
 
-        //TODO: I haven't been able to properly interface with Twitter so this is just a place holder.
         protected List<iTweet> FakeFindTweets(String hashTags)
         {
             var tweets = new List<iTweet>();
@@ -37,12 +40,46 @@ namespace FeedMeHash
 
             return tweets;
         }
-        protected List<iTweet> FindTweets(String hashTags)
+        protected List<iTweet> FindTweets(String dirtySearch)
         {
+            string cleanSearch = createValidEncodedSearchString(dirtySearch);
+            if (cleanSearch ==string.Empty){
+                return new List<iTweet>();
+            }
+
             TwitterOAuth twitterHelper = new TwitterOAuth();
-            string json = twitterHelper.httpSearchRequest("kittens");
+            string json = twitterHelper.httpSearchRequest(cleanSearch);
 
             return jsonToTweets(json);
+        }
+        protected string createValidEncodedSearchString(string dirtyString)
+        {
+            string[] hashTags = dirtyString.Split(_searchSeparators);
+            string cleanString = string.Empty;
+            string regex = String.Format("^{0}+$", acceptableHashTagCharactersRegEx);
+
+            foreach (string hashTag in hashTags)
+            {
+                string mutableHashTag = hashTag;
+                if (String.IsNullOrEmpty(hashTag))
+                {
+                    continue;
+                }
+                if (mutableHashTag.StartsWith("#"))
+                {
+                    if (mutableHashTag.Length == 1)
+                    {
+                        continue;
+                    }
+                    mutableHashTag = mutableHashTag.Substring(1, mutableHashTag.Length - 1);
+                }
+                if (!Regex.IsMatch(mutableHashTag, regex))
+                {
+                    continue;
+                }
+                cleanString += String.Format("#{0} ", mutableHashTag);
+            }
+            return HttpUtility.UrlEncode(cleanString, System.Text.Encoding.UTF8);
         }
 
         protected List<iTweet> jsonToTweets(string json)
@@ -55,14 +92,28 @@ namespace FeedMeHash
                 string fullName = status["user"]["name"].Value<string>();
                 string twitterName = status["user"]["screen_name"].Value<string>();
                 string tweetContent = status["text"].Value<string>();
-                string hashTags = "#kittens";
+                string hashTags = jsonHashTagsToHumanIntelligible(status["entities"]["hashtags"]);
 
                 tweets.Add(new Tweet(fullName, twitterName, tweetContent, hashTags, creationTime));
-
             }
-
             return tweets;
         }
+
+        protected string jsonHashTagsToHumanIntelligible(JToken json)
+        {
+            string hashTags = string.Empty;
+            foreach (var hashTag in json){
+                hashTags += string.Format("#{0} ",hashTag["text"]);
+            }
+
+            hashTags = hashTags.Trim();
+            if (hashTags == string.Empty)
+            {
+                return " ";
+            }
+            return hashTags;
+        }
+
 
         protected void AttachTweets(List<iTweet> tweets, PlaceHolder tweetHolder)
         {

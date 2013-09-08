@@ -15,7 +15,7 @@
         }
         public void FindTweetsButtonClicked(Object s, EventArgs e)
         {
-           tweets = FindTweets("#awesomesauce");
+           tweets = FindTweets(SearchBox.Text);
             
             AttachTweets(tweets, TweetHolder);
         }
