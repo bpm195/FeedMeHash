@@ -36,12 +36,12 @@ namespace FeedMeHash
             return GenerateRequest();
         }
 
-        public string httpRequest()
+        public string httpSearchRequest(string searchParameters)
         {
             string text;
             using (WebClient client = new WebClient())
             {
-                text = client.DownloadString(generateSearchRequest("kittens"));
+                text = client.DownloadString(generateSearchRequest(searchParameters));
             }
 
             return text;
