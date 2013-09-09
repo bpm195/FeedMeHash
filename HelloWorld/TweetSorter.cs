@@ -9,7 +9,7 @@ namespace FeedMeHash
     {
         public int Compare(iTweet x, iTweet y)
         {
-            return x.FullName.CompareTo(y);
+            return x.FullName.CompareTo(y.FullName);
         }
     }
 
@@ -17,7 +17,7 @@ namespace FeedMeHash
     {
         public int Compare(iTweet x, iTweet y)
         {
-            return x.TwitterName.CompareTo(y);
+            return x.TwitterName.CompareTo(y.TwitterName);
         }
     }
     public class SortTweetsByDateAscending : IComparer<iTweet>

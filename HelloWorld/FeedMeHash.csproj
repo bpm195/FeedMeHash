@@ -79,7 +79,6 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="FakeTweet.cs" />
     <Compile Include="Tweet.cs" />
     <Compile Include="TweetSorter.cs" />
     <Compile Include="TwitterOAuth.cs" />

@@ -27,19 +27,10 @@ namespace FeedMeHash
         {
             get { return ++_index; }
         }
-        protected IComparer<iTweet> _sortType = new Unsorted();
+        protected IComparer<iTweet> _sortType = new SortTweetsByFullName();
 
         protected void Page_Load(object sender, EventArgs e) { }
 
-        protected List<iTweet> FakeFindTweets(String hashTags)
-        {
-            var tweets = new List<iTweet>();
-            tweets.Add(new FakeTweet("Twitter Guy", "Twitter Guy", "Something important about kittens", "#kittens, #awesomesauce", DateTime.Now));
-            tweets.Add(new FakeTweet("Twitter Gurl", "Twitter Gurl", "Some content", "#kittens", DateTime.Now));
-            tweets.Add(new FakeTweet("Twitter Dude", "TD1337", "stuff", "#awesomesauce", DateTime.Now));
-
-            return tweets;
-        }
         protected List<iTweet> FindTweets(String dirtySearch)
         {
             string cleanSearch = createValidEncodedSearchString(dirtySearch);
@@ -117,12 +108,46 @@ namespace FeedMeHash
 
         protected void AttachTweets(List<iTweet> tweets, PlaceHolder tweetHolder)
         {
-            tweets.Sort(_sortType);
+           tweets.Sort(_sortType);
             tweetHolder.Controls.Clear();
             foreach (iTweet tweet in tweets)
             {
                 tweetHolder.Controls.Add(FormatTweet(tweet));
             }
+        }
+
+        protected List<iTweet> FilterTweets(List<iTweet> tweets, string filterString)
+        {
+            if (String.IsNullOrWhiteSpace(filterString))
+            {
+                return tweets;
+            }
+
+            var filterItems = filterString.Split(' ');
+            var retList = new List<iTweet>();
+            foreach (iTweet tweet in tweets)
+            {
+                if (!CheckTweetContainsAnyItem(tweet, filterItems))
+                {
+                    retList.Add(tweet);
+                }
+            }
+
+            return retList;
+        }
+
+        protected bool CheckTweetContainsAnyItem(iTweet tweet, string[] items)
+        {
+            bool retVal = false;
+            foreach (string item in items)
+            {
+                if (tweet.Contains(item))
+                {
+                    retVal = true;
+                    break;
+                }
+            }
+            return retVal;
         }
 
         protected void setSort(String _type)
@@ -132,8 +157,8 @@ namespace FeedMeHash
             {
                 case "twitter name": _sortType = new SortTweetsByTwitterName(); break;
                 case "full name": _sortType = new SortTweetsByFullName(); break;
-                case "data ascending": _sortType = new SortTweetsByDateAscending(); break;
-                case "data descending": _sortType = new SortTweetsByDateDescending(); break;
+                case "date ascending": _sortType = new SortTweetsByDateAscending(); break;
+                case "date descending": _sortType = new SortTweetsByDateDescending(); break;
                 default: _sortType = new Unsorted(); break;
             }
 

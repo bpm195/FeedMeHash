@@ -22,6 +22,12 @@ namespace FeedMeHash
             Date = DateTime.Parse(_date);
         }
 
+        public bool Contains(string s)
+        {
+            s = s.ToLower();
+            return(Content.ToLower().Contains(s)||HashTags.ToLower().Contains(s));
+        }
+
 
     }
 }

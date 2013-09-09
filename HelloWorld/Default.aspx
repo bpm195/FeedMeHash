@@ -15,14 +15,16 @@
         }
         public void FindTweetsButtonClicked(Object s, EventArgs e)
         {
-           tweets = FindTweets(SearchBox.Text);
+            tweets = FindTweets(SearchBox.Text);
+            tweets = FilterTweets(tweets, FilterBox.Text);
             
+            setSort(SortList.SelectedItem.Text);
             AttachTweets(tweets, TweetHolder);
         }
         public void SortListIndexChanged(Object s, EventArgs e)
         {
-            setSort(SortList.SelectedItem.Text);
-            AttachTweets(tweets, TweetHolder);
+            FindTweetsButtonClicked(s, e);
+            
         }
     </script>
 </head>

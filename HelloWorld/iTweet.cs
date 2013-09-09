@@ -12,5 +12,6 @@ namespace FeedMeHash
         string Content { get; }
         string HashTags { get; }
         DateTime Date { get; }
+        bool Contains(string s);
     }
 }
